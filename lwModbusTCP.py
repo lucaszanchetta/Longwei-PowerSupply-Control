@@ -26,12 +26,12 @@ class PSU:
 
     def getStats(self):
 
-        if self.ps.is_open():
-            self.values = self.ps.read_holding_registers(0x1000, 6)
-        else:
+        # if self.ps.is_open():
+        self.values = self.ps.read_holding_registers(0x1000, 6)
+        '''else:
             self.ps.open()
             self.values = self.ps.read_holding_registers(0x1000, 6)
-
+        '''
         self.vSetPoint = self.values[0] / 100
         self.aSetPoint = self.values[1] / 1000
         self.v = self.values[2] / 100
@@ -64,12 +64,13 @@ class PSU:
 
     def setVoltage(self, voltage):
         if voltage > 0 and voltage <= 31:
-            self.ps.write_single_register(4096, voltage)
+            self.voltage = int(voltage * 100)
+            self.ps.write_single_register(4096, self.voltage)
             time.sleep(0.1)
 
     def setCurrent(self, current):
         if current > 0 and current <= 5.1:
-            self.current = current * 10
+            self.current = int(current * 1000)
             self.ps.write_single_register(4097, self.current)
             time.sleep(0.1)
 
